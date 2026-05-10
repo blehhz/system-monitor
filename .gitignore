@@ -1,0 +1,9 @@
+# Build output
+build/
+
+# VSCode local settings
+.vscode/settings.json
+
+# Temporary/cache files
+temp.txt
+.cache/
