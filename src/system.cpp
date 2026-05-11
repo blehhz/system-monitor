@@ -9,15 +9,10 @@ std::string readFile(const std::string &path) {
     if (!file.is_open()) {
         return "";
     }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
 
-    std::string line;
-    std::string content;
-
-    while (std::getline(file, line)) {
-        content += line + '\n';
-    }
-
-    return content;
+    return buffer.str();
 }
 
 std::string getOs() {

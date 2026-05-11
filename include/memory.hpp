@@ -10,9 +10,9 @@ struct MemoryInfo {
 
 MemoryInfo getMemoryInfo();
 
-std::string getTotalMemory();
+std::string getTotalMemory(const MemoryInfo &info);
 
-std::string getAvailableMemory();
+std::string getAvailableMemory(const MemoryInfo &info);
 
-std::string getMemoryUsagePercentage();
+std::string getMemoryUsagePercentage(const MemoryInfo &info);
 } // namespace memory

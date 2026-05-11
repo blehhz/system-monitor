@@ -1,19 +1,23 @@
 #include "cpu.hpp"
 #include "memory.hpp"
 #include "system.hpp"
+#include <chrono>
 #include <iostream>
 #include <string>
+#include <thread>
 
 int main() {
 
-    std::string osName = sys::getOs();
-    std::string cpuModel = cpu::getCpuModel();
+    std::cout << "Os : " << sys::getOs() << '\n';
+    std::cout << "Cpu Model : " << cpu::getCpuModel() << '\n';
+    std::cout << cpu::getStats();
 
-    std::cout << "Os : " << osName << '\n';
-    std::cout << "Cpu Model : " << cpuModel << '\n';
-    std::cout << "Total Memory : " <<memory::getTotalMemory() << '\n';
-    std::cout << "Available Memory : " << memory::getAvailableMemory() << '\n';
-    std::cout << "Memory Usage : " << memory::getMemoryUsagePercentage() << '\n';
+    memory::MemoryInfo info = memory::getMemoryInfo();
+    std::cout << "\nTotal Memory : " << memory::getTotalMemory(info) << '\n';
+    std::cout << "Available Memory : " << memory::getAvailableMemory(info) << '\n';
+    std::cout << "Memory Usage : " << memory::getMemoryUsagePercentage(info) << '\n';
+
+    std::cout << cpu::getCpuUsagePercentage() << '\n';
 
     return 0;
 }

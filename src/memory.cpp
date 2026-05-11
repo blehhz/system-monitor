@@ -1,6 +1,5 @@
 #include "memory.hpp"
 #include "system.hpp"
-#include <cstddef>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -32,9 +31,9 @@ long getValue(std::string key) {
     return -1;
 }
 
-double toGB(double memoryKB) { return static_cast<double>(memoryKB) / 1024 / 1024; }
+double toGB(long memoryKB) { return static_cast<double>(memoryKB) / 1024 / 1024; }
 
-std::string formatMemoryGB(double memoryKB) {
+std::string formatMemory(double memoryKB) {
     double memoryGB = toGB(memoryKB);
 
     std::ostringstream outStream;
@@ -57,20 +56,11 @@ MemoryInfo getMemoryInfo() {
     return info;
 }
 
-std::string getTotalMemory() {
-    MemoryInfo info = getMemoryInfo();
+std::string getTotalMemory(const MemoryInfo &info) { return formatMemory(info.totalKB); }
 
-    return formatMemoryGB(info.totalKB);
-}
+std::string getAvailableMemory(const MemoryInfo &info) { return formatMemory(info.availableKB); }
 
-std::string getAvailableMemory() {
-    MemoryInfo info = getMemoryInfo();
-
-    return formatMemoryGB(info.availableKB);
-}
-
-std::string getMemoryUsagePercentage() {
-    MemoryInfo info = memory::getMemoryInfo();
+std::string getMemoryUsagePercentage(const MemoryInfo &info) {
     long memoryUsed = info.totalKB - info.availableKB;
     double memoryUsagePercentage = (static_cast<double>(memoryUsed) / info.totalKB) * 100;
     std::ostringstream outStream;
