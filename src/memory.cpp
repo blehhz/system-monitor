@@ -1,44 +1,83 @@
 #include "memory.hpp"
 #include "system.hpp"
 #include <cstddef>
+#include <iomanip>
 #include <sstream>
 #include <string>
 
 namespace {
-std::string getData(std::string key) {
+long getValue(std::string key) {
     std::string content = sys::readFile("/proc/meminfo");
+
     if (content.empty()) {
-        return "No info!";
+        return -1;
     }
 
     std::istringstream stringStream(content);
     std::string line;
-    long value;
-    std::string unit;
+
     while (std::getline(stringStream, line)) {
         if (line.starts_with(key + ":")) {
+            long value = -1;
+
             size_t pos = line.find(":");
             std::string fullVal = line.substr(pos + 1);
-            std::istringstream stream(fullVal);
 
-            stream >> value >> unit;
+            std::istringstream stream(fullVal);
+            stream >> value;
+
+            return value;
         }
     }
-    return (std::to_string(value) + " " + unit);
+    return -1;
+}
+
+double toGB(double memoryKB) { return static_cast<double>(memoryKB) / 1024 / 1024; }
+
+std::string formatMemoryGB(double memoryKB) {
+    double memoryGB = toGB(memoryKB);
+
+    std::ostringstream outStream;
+
+    outStream << std::fixed;
+    outStream << std::setprecision(2);
+    outStream << memoryGB << " GB";
+
+    return outStream.str();
 }
 } // namespace
 
 namespace memory {
+
+MemoryInfo getMemoryInfo() {
+    MemoryInfo info;
+    info.totalKB = getValue("MemTotal");
+    info.availableKB = getValue("MemAvailable");
+
+    return info;
+}
+
 std::string getTotalMemory() {
+    MemoryInfo info = getMemoryInfo();
 
-    std::string data = getData("MemTotal");
-
-    return data;
+    return formatMemoryGB(info.totalKB);
 }
 
 std::string getAvailableMemory() {
-    std::string data = getData("MemAvailable");
+    MemoryInfo info = getMemoryInfo();
 
-    return data;
+    return formatMemoryGB(info.availableKB);
+}
+
+std::string getMemoryUsagePercentage() {
+    MemoryInfo info = memory::getMemoryInfo();
+    long memoryUsed = info.totalKB - info.availableKB;
+    double memoryUsagePercentage = (static_cast<double>(memoryUsed) / info.totalKB) * 100;
+    std::ostringstream outStream;
+    outStream << std::fixed;
+    outStream << std::setprecision(1);
+    outStream << memoryUsagePercentage << "%";
+
+    return outStream.str();
 }
 } // namespace memory

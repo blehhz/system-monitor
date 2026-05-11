@@ -11,7 +11,9 @@ int main() {
 
     std::cout << "Os : " << osName << '\n';
     std::cout << "Cpu Model : " << cpuModel << '\n';
-    std::cout << memory::getTotalMemory() << '\n';
-    std::cout << memory::getAvailableMemory() << '\n';
+    std::cout << "Total Memory : " <<memory::getTotalMemory() << '\n';
+    std::cout << "Available Memory : " << memory::getAvailableMemory() << '\n';
+    std::cout << "Memory Usage : " << memory::getMemoryUsagePercentage() << '\n';
+
     return 0;
 }
