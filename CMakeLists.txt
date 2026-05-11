@@ -24,6 +24,8 @@ add_executable(sysfetch
     src/system.cpp
     src/cpu.cpp
     src/memory.cpp
+    src/disk.cpp
+    src/monitor.cpp
 )
 
 target_include_directories(sysfetch PRIVATE

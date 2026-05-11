@@ -1,23 +1,14 @@
-#include "cpu.hpp"
-#include "memory.hpp"
-#include "system.hpp"
-#include <chrono>
+#include "monitor.hpp"
 #include <iostream>
-#include <string>
-#include <thread>
+// #include <chrono>
+// #include <string>
+// #include <thread>
 
 int main() {
 
-    std::cout << "Os : " << sys::getOs() << '\n';
-    std::cout << "Cpu Model : " << cpu::getCpuModel() << '\n';
-    std::cout << cpu::getStats();
+    monitor::SystemInfo info = monitor::getSystemInfo();
 
-    memory::MemoryInfo info = memory::getMemoryInfo();
-    std::cout << "\nTotal Memory : " << memory::getTotalMemory(info) << '\n';
-    std::cout << "Available Memory : " << memory::getAvailableMemory(info) << '\n';
-    std::cout << "Memory Usage : " << memory::getMemoryUsagePercentage(info) << '\n';
-
-    std::cout << cpu::getCpuUsagePercentage() << '\n';
+    std::cout << "Host Name : " << info.system.hostName << '\n';
 
     return 0;
 }

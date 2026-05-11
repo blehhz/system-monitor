@@ -4,18 +4,13 @@
 namespace cpu {
 
 struct CpuStats {
-    std::string label;
     long user;
     long nice;
     long system;
     long idle;
 };
 
-CpuStats getCpuStatsInfo();
+CpuStats getCpuStats();
 
 std::string getCpuModel();
-
-std::string getStats();
-
-std::string getCpuUsagePercentage();
 } // namespace cpu

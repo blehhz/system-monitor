@@ -1,12 +1,8 @@
 #include "cpu.hpp"
 #include "system.hpp"
-#include <chrono>
 #include <cstddef>
-#include <iomanip>
-#include <ios>
 #include <sstream>
 #include <string>
-#include <thread>
 
 namespace {
 
@@ -52,35 +48,15 @@ namespace cpu {
 
 std::string getCpuModel() { return getCpuInfo("model name"); }
 
-CpuStats getCpuStatsInfo() {
+CpuStats getCpuStats() {
     CpuStats stats;
 
     std::istringstream lineStream(getCpuStatsContent("cpu"));
+    std::string ignored;
 
-    lineStream >> stats.label >> stats.user >> stats.nice >> stats.system >> stats.idle;
+    lineStream >> ignored >> stats.user >> stats.nice >> stats.system >> stats.idle;
 
     return stats;
 }
 
-std::string getCpuUsagePercentage() {
-    CpuStats first = getCpuStatsInfo();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    CpuStats second = getCpuStatsInfo();
-
-    long firstTotal = first.user + first.idle + first.nice + first.system;
-    long secondTotal = second.user + second.idle + second.nice + second.system;
-
-    long totalIdleDifference = second.idle - first.idle;
-    long totalDifference = secondTotal - firstTotal;
-
-    double cpuUsagePercentage =
-        ((1 - (static_cast<double>(totalIdleDifference) / totalDifference)) * 100);
-
-    std::ostringstream outStream;
-    outStream << std::fixed;
-    outStream << std::setprecision(1);
-    outStream << cpuUsagePercentage << "%";
-
-    return outStream.str();
-}
 } // namespace cpu

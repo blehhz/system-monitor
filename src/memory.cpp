@@ -1,11 +1,10 @@
 #include "memory.hpp"
 #include "system.hpp"
-#include <iomanip>
 #include <sstream>
 #include <string>
 
 namespace {
-long getValue(std::string key) {
+long getValue(const std::string &key) {
     std::string content = sys::readFile("/proc/meminfo");
 
     if (content.empty()) {
@@ -30,20 +29,6 @@ long getValue(std::string key) {
     }
     return -1;
 }
-
-double toGB(long memoryKB) { return static_cast<double>(memoryKB) / 1024 / 1024; }
-
-std::string formatMemory(double memoryKB) {
-    double memoryGB = toGB(memoryKB);
-
-    std::ostringstream outStream;
-
-    outStream << std::fixed;
-    outStream << std::setprecision(2);
-    outStream << memoryGB << " GB";
-
-    return outStream.str();
-}
 } // namespace
 
 namespace memory {
@@ -52,22 +37,9 @@ MemoryInfo getMemoryInfo() {
     MemoryInfo info;
     info.totalKB = getValue("MemTotal");
     info.availableKB = getValue("MemAvailable");
+    info.usedKB = info.totalKB - info.availableKB;
+    info.usagePercentage = (static_cast<double>(info.usedKB) / info.totalKB) * 100;
 
     return info;
-}
-
-std::string getTotalMemory(const MemoryInfo &info) { return formatMemory(info.totalKB); }
-
-std::string getAvailableMemory(const MemoryInfo &info) { return formatMemory(info.availableKB); }
-
-std::string getMemoryUsagePercentage(const MemoryInfo &info) {
-    long memoryUsed = info.totalKB - info.availableKB;
-    double memoryUsagePercentage = (static_cast<double>(memoryUsed) / info.totalKB) * 100;
-    std::ostringstream outStream;
-    outStream << std::fixed;
-    outStream << std::setprecision(1);
-    outStream << memoryUsagePercentage << "%";
-
-    return outStream.str();
 }
 } // namespace memory
