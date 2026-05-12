@@ -3,14 +3,13 @@
 
 namespace cpu {
 
-struct CpuStats {
+struct CpuInfo {
     long user;
     long nice;
     long system;
     long idle;
+    std::string cpuModel;
 };
 
-CpuStats getCpuStats();
-
-std::string getCpuModel();
+CpuInfo getCpuInfo();
 } // namespace cpu

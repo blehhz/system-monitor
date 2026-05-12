@@ -4,12 +4,10 @@
 namespace monitor {
 SystemInfo getSystemInfo() {
     SystemInfo info;
-    info.cpu = cpu::getCpuStats();
+    info.cpu = cpu::getCpuInfo();
     info.memory = memory::getMemoryInfo();
     info.disk = disk::getDiskInfo();
     info.system = sys::getSystemMeta();
-
-    info.cpuModel = cpu::getCpuModel();
 
     return info;
 }
