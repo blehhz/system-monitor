@@ -6,7 +6,7 @@
 
 namespace {
 
-std::string getCpuContent(std::string key) {
+std::string getCpuInfoValue(std::string key) {
     std::string content = sys::readFile("/proc/cpuinfo");
     if (content.empty()) {
         return "No info!";
@@ -54,7 +54,7 @@ CpuInfo getCpuInfo() {
 
     lineStream >> ignored >> stats.user >> stats.nice >> stats.system >> stats.idle;
 
-    stats.cpuModel = getCpuContent("model name");
+    stats.cpuModel = getCpuInfoValue("model name");
 
     return stats;
 }

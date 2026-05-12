@@ -8,6 +8,7 @@ struct CpuInfo {
     long nice;
     long system;
     long idle;
+    double usagePercentage;
     std::string cpuModel;
 };
 

@@ -26,10 +26,7 @@ json systemToJson(const sys::SystemMeta &info) {
 
 json cpuToJson(const cpu::CpuInfo &info) {
     json data;
-    data["user"] = info.user;
-    data["nice"] = info.nice;
-    data["system"] = info.system;
-    data["idle"] = info.idle;
+    data["usagePercentage"] = info.usagePercentage;
     data["cpuModel"] = info.cpuModel;
 
     return data;
