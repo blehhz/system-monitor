@@ -16,6 +16,7 @@ add_executable(sysfetch
     src/monitor.cpp
     src/jsonBuilder.cpp
     src/api.cpp
+    src/telemetryService.cpp
 )
 
 target_include_directories(sysfetch PRIVATE

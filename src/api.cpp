@@ -1,15 +1,14 @@
-#include <httplib.h>
-
 #include "api.hpp"
 #include "jsonBuilder.hpp"
-#include "monitor.hpp"
+#include "telemetryService.hpp"
+#include <httplib.h>
 
 namespace api {
 void startServer() {
     httplib::Server server;
 
     server.Get("/metrics", [](const httplib::Request &req, httplib::Response &res) {
-        monitor::SystemInfo info = monitor::getSystemInfo();
+        monitor::SystemInfo info = telemetryService::getSystemInfo();
 
         jsonBuilder::json data = jsonBuilder::systemInfoToJson(info);
         res.set_header("Access-Control-Allow-Origin", "*");

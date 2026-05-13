@@ -1,5 +1,5 @@
 # Build output
-backend/build/
+build/
 
 # VSCode local settings
 .vscode/settings.json
