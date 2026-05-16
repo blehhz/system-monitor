@@ -1,5 +1,7 @@
 #include "telemetryService.hpp"
 #include "monitor.hpp"
+
+#include <atomic>
 #include <chrono>
 #include <mutex>
 #include <thread>
@@ -9,13 +11,18 @@ monitor::SystemInfo cachedInfo;
 
 std::mutex telemetryMutex;
 
+std::atomic<bool> running = false;
+
+std::thread telemetryThread;
+
 } // namespace
 
 namespace telemetryService {
 void start() {
+    running = true;
     cachedInfo = monitor::getSystemInfo();
-    std::thread([]() {
-        while (true) {
+    telemetryThread = std::thread([]() {
+        while (running) {
             monitor::SystemInfo newInfo = monitor::getSystemInfo();
 
             {
@@ -26,7 +33,7 @@ void start() {
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
-    }).detach();
+    });
 }
 
 monitor::SystemInfo getSystemInfo() {
@@ -34,5 +41,13 @@ monitor::SystemInfo getSystemInfo() {
     std::lock_guard<std::mutex> lock(telemetryMutex);
 
     return cachedInfo;
+}
+
+void stop() {
+    running = false;
+
+    if (telemetryThread.joinable()) {
+        telemetryThread.join();
+    }
 }
 } // namespace telemetryService
