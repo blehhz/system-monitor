@@ -54,6 +54,8 @@ CpuInfo getCpuInfo() {
 
     lineStream >> ignored >> stats.user >> stats.nice >> stats.system >> stats.idle;
 
+    stats.total = stats.user + stats.nice + stats.system + stats.idle;
+
     stats.cpuModel = getCpuInfoValue("model name");
 
     return stats;

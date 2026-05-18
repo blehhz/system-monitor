@@ -4,5 +4,8 @@
 namespace telemetryService {
 
 void start();
+
+void stop();
+
 monitor::SystemInfo getSystemInfo();
 } // namespace telemetryService
