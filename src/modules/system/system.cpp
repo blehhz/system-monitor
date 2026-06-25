@@ -50,16 +50,16 @@ long getUptime() {
     }
 
     std::istringstream stringStream(content);
-    long uptime = 0;
-    long idleTime = 0;
+    double uptime = 0;
+    double idleTime = 0;
 
     stringStream >> uptime >> idleTime;
 
-    return uptime;
+    return static_cast<long>(uptime);
 }
 
 SystemMeta getSystemMeta() {
-    SystemMeta sysInfo;
+    SystemMeta sysInfo{};
     struct utsname info;
     if (uname(&info) == -1) {
         sysInfo.osName = "Unknown";

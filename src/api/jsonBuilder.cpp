@@ -1,6 +1,5 @@
 #include "jsonBuilder.hpp"
 #include "cpu.hpp"
-#include "monitor.hpp"
 
 namespace jsonBuilder {
 json memoryToJson(const memory::MemoryInfo &info) {
@@ -38,16 +37,6 @@ json diskToJson(const disk::DiskInfo &info) {
     data["availableBytes"] = info.availableBytes;
     data["usedBytes"] = info.usedBytes;
     data["usagePercentage"] = info.usagePercentage;
-
-    return data;
-}
-
-json systemInfoToJson(const monitor::SystemInfo &info) {
-    json data;
-    data["system"] = systemToJson(info.system);
-    data["cpu"] = cpuToJson(info.cpu);
-    data["memory"] = memoryToJson(info.memory);
-    data["disk"] = diskToJson(info.disk);
 
     return data;
 }

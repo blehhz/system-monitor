@@ -1,6 +1,6 @@
-#include "memory.hpp"
-
 #pragma once
+
+#include "memory.hpp"
 
 namespace memoryService {
 void start();

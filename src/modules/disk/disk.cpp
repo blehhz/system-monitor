@@ -4,7 +4,7 @@
 namespace disk {
 
 DiskInfo getDiskInfo() {
-    DiskInfo diskInfo;
+    DiskInfo diskInfo{};
     struct statvfs info;
 
     if (statvfs("/", &info) == -1) {
@@ -19,8 +19,12 @@ DiskInfo getDiskInfo() {
     diskInfo.totalBytes = info.f_blocks * info.f_frsize;
     diskInfo.availableBytes = info.f_bavail * info.f_frsize;
     diskInfo.usedBytes = diskInfo.totalBytes - diskInfo.availableBytes;
-    diskInfo.usagePercentage =
-        (static_cast<double>(diskInfo.usedBytes) / diskInfo.totalBytes) * 100;
+    if(diskInfo.totalBytes==0) {
+        diskInfo.usagePercentage=0;
+    }
+    else {
+        diskInfo.usagePercentage= static_cast<double>(diskInfo.usedBytes) / diskInfo.totalBytes * 100;
+    }
 
     return diskInfo;
 }

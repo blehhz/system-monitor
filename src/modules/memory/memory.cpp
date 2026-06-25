@@ -34,11 +34,16 @@ long getValue(const std::string &key) {
 namespace memory {
 
 MemoryInfo getMemoryInfo() {
-    MemoryInfo info;
+    MemoryInfo info{};
     info.totalKB = getValue("MemTotal");
     info.availableKB = getValue("MemAvailable");
     info.usedKB = info.totalKB - info.availableKB;
-    info.usagePercentage = (static_cast<double>(info.usedKB) / info.totalKB) * 100;
+    if(info.totalKB<=0) {
+        info.usagePercentage=0;
+    }
+    else {
+        info.usagePercentage = static_cast<double>( info.usedKB ) / info.totalKB * 100;
+    }
 
     return info;
 }

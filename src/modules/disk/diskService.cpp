@@ -18,11 +18,16 @@ std::thread diskThread;
 
 namespace diskService {
 void start() {
+    
+    if(running.load()){
+        return;
+    }
+
     running = true;
     cachedInfo = disk::getDiskInfo();
 
     diskThread = std::thread([]() {
-        while (running) {
+        while (running.load()) {
             disk::DiskInfo newInfo = disk::getDiskInfo();
 
             {

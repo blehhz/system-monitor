@@ -15,9 +15,5 @@ std::string getOs();
 
 long getUptime();
 
-std::string getKernelVersion();
-
-std::string getHostname();
-
 SystemMeta getSystemMeta();
 } // namespace sys

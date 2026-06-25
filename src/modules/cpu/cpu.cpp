@@ -47,12 +47,14 @@ std::string getCpuInfoContent(std::string key) {
 namespace cpu {
 
 CpuInfo getCpuInfo() {
-    CpuInfo stats;
+    CpuInfo stats{};
 
     std::istringstream lineStream(getCpuInfoContent("cpu"));
     std::string ignored;
-
-    lineStream >> ignored >> stats.user >> stats.nice >> stats.system >> stats.idle;
+    
+    if (!(lineStream >> ignored >> stats.user >> stats.nice >> stats.system >> stats.idle)){
+        return {};
+    }
 
     stats.total = stats.user + stats.nice + stats.system + stats.idle;
 

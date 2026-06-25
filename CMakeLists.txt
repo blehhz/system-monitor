@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(sysfetch)
+project(system-monitor)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(sysfetch
+add_executable(system-monitor
     src/main.cpp
     
     src/api/jsonBuilder.cpp
@@ -23,16 +23,15 @@ add_executable(sysfetch
     src/modules/disk/diskService.cpp
     
     src/modules/system/system.cpp
+    src/modules/system/systemService.cpp
     
-    src/core/monitor.cpp
-    src/core/telemetryService.cpp
 )
 
-target_include_directories(sysfetch PRIVATE
+target_include_directories(system-monitor PRIVATE
     include
 )
 
-target_compile_options(sysfetch PRIVATE
+target_compile_options(system-monitor PRIVATE
     -Wall
     -Wextra
     -Wpedantic

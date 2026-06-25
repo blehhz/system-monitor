@@ -1,63 +1,81 @@
 #include "api.hpp"
-#include "cpuService.hpp"
-#include "disk.hpp"
-#include "diskService.hpp"
-#include "jsonBuilder.hpp"
-#include "memory.hpp"
-#include "memoryService.hpp"
-#include "system.hpp"
-#include "telemetryService.hpp"
 #include <httplib.h>
+#include "jsonBuilder.hpp"
+
+#include "cpuService.hpp"
+#include "diskService.hpp"
+#include "memoryService.hpp"
+#include "systemService.hpp"
 
 namespace {
 httplib::Server server;
 
+void respondJson(httplib::Response& res, const jsonBuilder::json& data) {
+    res.set_header("Access-Control-Allow-Origin", "*");
+
+    res.set_content(data.dump(), "application/json");
+}
 }
 
 namespace api {
 void startServer() {
 
-    server.Get("/metrics", [](const httplib::Request, httplib::Response &res) {
-        monitor::SystemInfo info = telemetryService::getSystemInfo();
+    server.Get("/metrics", [](const httplib::Request&, httplib::Response& res) {
 
-        jsonBuilder::json data = jsonBuilder::systemInfoToJson(info);
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(data.dump(4), "application/json");
+        jsonBuilder::json data;
+    
+        data["cpu"] = jsonBuilder::cpuToJson(cpuService::getCpuInfo());
+    
+        data["memory"] = jsonBuilder::memoryToJson(memoryService::getMemoryInfo());
+    
+        data["disk"] = jsonBuilder::diskToJson(diskService::getDiskInfo());
+    
+        data["system"] = jsonBuilder::systemToJson(systemService::getSystemInfo());
+    
+        respondJson(res,data);
     });
 
-    server.Get("/cpu", [](const httplib::Request, httplib::Response &res) {
+    server.Get("/cpu", [](const httplib::Request&, httplib::Response& res) {
         cpu::CpuInfo info = cpuService::getCpuInfo();
 
-        jsonBuilder::json data = jsonBuilder::cpuToJson(info);
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(data.dump(4), "application/json");
+        respondJson(
+            res,
+            jsonBuilder::cpuToJson(info)
+        );
     });
 
-    server.Get("/memory", [](const httplib::Request, httplib::Response &res) {
+    server.Get("/memory", [](const httplib::Request&, httplib::Response& res) {
         memory::MemoryInfo info = memoryService::getMemoryInfo();
 
-        jsonBuilder::json data = jsonBuilder::memoryToJson(info);
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(data.dump(4), "application/json");
+        respondJson(
+            res,
+            jsonBuilder::memoryToJson(info)
+        );
     });
 
-    server.Get("/disk", [](const httplib::Request, httplib::Response &res) {
+    server.Get("/disk", [](const httplib::Request&, httplib::Response& res) {
         disk::DiskInfo info = diskService::getDiskInfo();
 
-        jsonBuilder::json data = jsonBuilder::diskToJson(info);
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(data.dump(4), "application/json");
+        respondJson(
+            res,
+            jsonBuilder::diskToJson(info)
+        );
     });
 
-    server.Get("/system", [](const httplib::Request, httplib::Response &res) {
-        sys::SystemMeta info = sys::getSystemMeta();
+    server.Get("/system", [](const httplib::Request&, httplib::Response& res) {
+        sys::SystemMeta info = systemService::getSystemInfo();
 
-        jsonBuilder::json data = jsonBuilder::systemToJson(info);
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(data.dump(4), "application/json");
+        respondJson(
+            res,
+            jsonBuilder::systemToJson(info)
+        );
+    });
+    
+    server.Get("/health", [](const httplib::Request&, httplib::Response& res) {
+        res.set_content("ok", "text/plain");
     });
 
-    server.listen("localhost", 8080);
+    server.listen("127.0.0.1", 8080);
 }
 
 void stopServer() { server.stop(); }

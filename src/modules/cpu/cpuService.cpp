@@ -17,11 +17,16 @@ std::thread cpuThread;
 
 namespace cpuService {
 void start() {
+    
+    if(running.load()){
+        return;
+    }
+
     running = true;
     cachedInfo = cpu::getCpuInfo();
 
     cpuThread = std::thread([]() {
-        while (running) {
+        while (running.load()) {
 
             cpu::CpuInfo first = cpu::getCpuInfo();
 
@@ -32,8 +37,12 @@ void start() {
             long totalDiff = second.total - first.total;
             long idleDiff = second.idle - first.idle;
 
-            second.usagePercentage = (1 - (static_cast<double>(idleDiff) / totalDiff)) * 100.0;
-
+            if(totalDiff <= 0){
+                second.usagePercentage = 0;
+            }
+            else{
+                second.usagePercentage = (1.0 - static_cast<double>(idleDiff)/totalDiff) * 100;
+            }
             {
                 std::lock_guard<std::mutex> lock(cpuMutex);
 

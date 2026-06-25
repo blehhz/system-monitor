@@ -18,11 +18,16 @@ std::thread memoryThread;
 
 namespace memoryService {
 void start() {
+    
+    if(running.load()){
+        return;
+    }
+    
     running = true;
     cachedInfo = memory::getMemoryInfo();
 
     memoryThread = std::thread([]() {
-        while (running) {
+        while (running.load()) {
             memory::MemoryInfo newInfo = memory::getMemoryInfo();
 
             {
